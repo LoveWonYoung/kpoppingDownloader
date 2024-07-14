@@ -11,11 +11,11 @@ headers = {
 }
 
 
-
+# https://kpopping.com/profiles/idol/Yujin3
 def download_one_pic(link: str):
     pic_content = requests.get(link, headers=headers)
     pic_name = link.split('.')[1].split('/')[-1]
-    with open(f"/Users/wonyoung/Desktop/karina/{pic_name}.jpeg", "wb") as file:
+    with open(f"/root/myGoCode/yujin/{pic_name}.jpeg", "wb") as file:
         file.write(pic_content.content)
 
 
@@ -23,7 +23,7 @@ def get_download_link():
     ex = '<a href="(.*?)" class="cell" aria-label="album">'
     image_list_link = []
     for i in range(60):
-        response = requests.post(r"https://kpopping.com/profiles/idol/Karina2/latest-pictures/{}".format(i))
+        response = requests.post(r"https://kpopping.com/profiles/idol/Yujin3/latest-pictures/{}".format(i))
         if response.status_code != 200:
             return
         idol_img_json = json.loads(response.text)
