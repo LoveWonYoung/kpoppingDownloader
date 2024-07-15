@@ -7,31 +7,36 @@ import requests
 
 headers = {
     'User-Agent':
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 '
+        'Safari/537.36'
 }
+
+name = "Leeseo"
+
+if not os.path.exists(f'/Users/wonyoung/Desktop/{name}'):
+    os.mkdir(f'/Users/wonyoung/Desktop/{name}')
 
 
 # https://kpopping.com/profiles/idol/Yujin3
 def download_one_pic(link: str):
     pic_content = requests.get(link, headers=headers)
     pic_name = link.split('.')[1].split('/')[-1]
-    with open(f"/root/myGoCode/yujin/{pic_name}.jpeg", "wb") as file:
+    with open(f"/Users/wonyoung/Desktop/{name}/{pic_name}.jpeg", "wb") as file:
         file.write(pic_content.content)
 
 
 def get_download_link():
     ex = '<a href="(.*?)" class="cell" aria-label="album">'
-    image_list_link = []
-    for i in range(60):
-        response = requests.post(r"https://kpopping.com/profiles/idol/Yujin3/latest-pictures/{}".format(i))
+
+    for i in range(1000):
+        response = requests.post(r"https://kpopping.com/profiles/idol/{}/latest-pictures/{}".format(name, i))
         if response.status_code != 200:
+            print(f"page:{i}停止了下载")
             return
         idol_img_json = json.loads(response.text)
         image_list = re.findall(ex, idol_img_json['content'])  # 找到12个链接
-        print(image_list)
-        for r_link in image_list:
-            image_list_link.append('https://kpopping.com' + r_link)
-
+        image_list_link = ['https://kpopping.com' + x for x in image_list]
+        print(len(image_list_link), "单次下载长度", f"第{i}页")
         with concurrent.futures.ThreadPoolExecutor() as pool:
             pool.map(get_pic_link, image_list_link)
 

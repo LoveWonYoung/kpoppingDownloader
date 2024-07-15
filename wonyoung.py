@@ -23,16 +23,15 @@ def download_one_pic(link: str):
 
 def get_download_link():
     ex = '<a href="(.*?)" class="cell" aria-label="album">'
-    image_list_link = []
-    for i in range(60):
+    for i in range(71, 1000):
         response = requests.post(r"https://kpopping.com/profiles/idol/Wonyoung/latest-pictures/{}".format(i))
         if response.status_code != 200:
+            print(f"page:{i}停止了下载")
             return
         idol_img_json = json.loads(response.text)
         image_list = re.findall(ex, idol_img_json['content'])  # 找到12个链接
-        print(image_list)
-        for r_link in image_list:
-            image_list_link.append('https://kpopping.com' + r_link)
+        image_list_link = ['https://kpopping.com' + x for x in image_list]
+        print(len(image_list_link), "单次下载长度", f"page:{i}")
         with concurrent.futures.ThreadPoolExecutor() as pool:
             pool.map(get_pic_link, image_list_link)
 
@@ -52,6 +51,8 @@ def get_pic_link(link):
         d_link.append("https://kpopping.com/documents/" + i)
     with concurrent.futures.ThreadPoolExecutor() as pool:
         pool.map(download_one_pic, d_link)
+
+
 '''
 /Users/wonyoung/Desktop/wonyoung
 '''
