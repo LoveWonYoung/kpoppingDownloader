@@ -44,13 +44,7 @@ def get_download_link():
 def get_pic_link(link):
     d_link = []
     r = requests.get(link, headers=headers).text
-    # ex = '<img src="/documents/(.*?)" alt='
     ex = '<a href="/documents/(.*?)" data'
-    '''
-    <a href="/documents/2c/5/2730/240705-IVE-Yujin-Wonyoung-at-Hong-Kong-Fansign-Event-documents-1.jpeg?v=aca46" data-fancybox="gallery" data-hash="false" data-thumbs="false" style="--ratio:150.01500150015%;">
-<img src="/documents/2c/5/800/240705-IVE-Yujin-Wonyoung-at-Hong-Kong-Fansign-Event-documents-1.jpeg?v=9270a" alt="240705 IVE Yujin, Wonyoung at Hong Kong Fansign Event documents 1">
-</a>
-    '''
     p = re.findall(ex, r)
     for i in p:
         d_link.append("https://kpopping.com/documents/" + i)
