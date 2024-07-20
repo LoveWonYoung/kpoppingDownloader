@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"karina/downloader"
 	"net/http"
 	"regexp"
 	"sync"
 )
 
 var wg sync.WaitGroup
-
 
 type urlJson struct {
 	Items        map[string]string `json:"items"`
@@ -62,6 +62,7 @@ func gethtmlText(url string) string {
 	// fmt.Println(string(body))
 	return string(body)
 }
+
 // 得到图片的链接，返回的是[]string
 func reqList() []string {
 	var retImageList []string
@@ -83,20 +84,7 @@ func reqList() []string {
 }
 
 //多线程请求上述列表，先拼接，返回的是每个链接指向的所有图片链接
-/*
-/kpics/240614-WONYOUNG-INSTAGRAM-UPDATE
-/kpics/240713-Wonyoung-1st-World-Tour-Show-What-I-Have-in-Manila
-/kpics/240705-IVE-Yujin-Wonyoung-at-Hong-Kong-Fansign-Event
-/kpics/240712-WONYOUNG-LEESEO-FANSIGN-EVENT
-/kpics/240519-WONYOUNG-LEESEO-FANSIGN-EVENT
-/kpics/240712-IVE-WONYOUNG-FANSIGN-EVENT
-/kpics/240712-IVE-Wonyoung-IVE-SHOW-WHAT-I-HAVE-The-1st-World-Tour-Backstage-with-Dispatch
-/kpics/240710-WONYOUNG-Instagram-Update
-/kpics/240707-WONYOUNG-1st-World-Tour-Show-What-I-Have-in-Hong-Kong-Day-2
-/kpics/240706-IVE-Wonyoung-1st-World-Tour-Show-What-I-Have-in-Hong-Kong-Day-1
-/kpics/240706-Wonyoung-Instagram-Update
-/kpics/240705-WONYOUNG-FANSIGN-EVENT-IN-HONG-KONG
-*/
+
 // https://kpopping.com/profiles/idol/Karina2/latest-pictures
 
 // 从返回的链接中找到所有图片链接
@@ -106,12 +94,11 @@ func getOnePicLink(pImageLink []string) []string {
 	//次数实现多线程请求12个链接
 	var opl []string
 
-	
 	// 请求一次
 	for _, req := range pImageLink {
 		wg.Add(1)
 		re := regexp.MustCompile(`<a href="/documents/(.*?)" data`)
-		
+
 		go func(link string) {
 			onePicLink := re.FindAllStringSubmatch(link, -1)
 			for _, pL := range onePicLink {
@@ -134,6 +121,7 @@ func threadDonwload(t []string) {
 		wg.Add(1)
 		go func(n string) {
 			fmt.Println(n) //此处实现下载
+
 			wg.Done()
 		}(j)
 	}
@@ -142,6 +130,6 @@ func threadDonwload(t []string) {
 func main() {
 
 	//reqList()
-	threadDonwload(getOnePicLink(reqList()))
-
+	//threadDonwload(getOnePicLink(reqList()))
+	downloader.OnePicDownload("a")
 }
