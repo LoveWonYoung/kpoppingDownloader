@@ -11,6 +11,9 @@ headers = {
         'Safari/537.36'
 }
 
+total_pages = 2
+folder = '/Volumes/mac移动'
+
 
 class KpopDownload:
     def __init__(self, name):
@@ -19,40 +22,39 @@ class KpopDownload:
         self.get_download_link()
 
     def create_dir(self):
-        if not os.path.exists(f'/Volumes/mac移动/{self.name}'):
-            os.mkdir(f'/Volumes/mac移动/{self.name}')
+        if not os.path.exists(f'{folder}/{self.name}'):
+            os.mkdir(f'{folder}/{self.name}')
 
     # noinspection PyMethodMayBeStatic
-    def download_one_pic(self, link: str):
+    def download_one_picture(self, link: str):
         pic_content = requests.get(link, headers=headers)
         pic_name = link.split('.')[1].split('/')[-1]
         with open(f"/Volumes/mac移动/{self.name}/{pic_name}.jpeg", "wb") as file:
             file.write(pic_content.content)
 
     def get_download_link(self):
-        ex = '<a href="(.*?)" class="cell" aria-label="album">'
-
-        for i in range(2):
+        ex = '<a href="(.*?)" class="cell" aria-label="album">'  # 每个人下面图片链接的正则
+        for i in range(total_pages):
             response = requests.post(r"https://kpopping.com/profiles/idol/{}/latest-pictures/{}".format(self.name, i))
             if response.status_code != 200:
-                print(f"page:{i}停止了下载")
+                print(f"第:{i}页,停止了下载,因为只有这么多页")
                 return
             idol_img_json = json.loads(response.text)
-            image_list = re.findall(ex, idol_img_json['content'])  # 找到12个链接
+            image_list = re.findall(ex, idol_img_json['content'])  # 找到每页的12个链接
             image_list_link = ['https://kpopping.com' + x for x in image_list]
             print(len(image_list_link), "单次下载长度", f"第{i}页")
             with concurrent.futures.ThreadPoolExecutor() as pool:
-                pool.map(self.get_pic_link, image_list_link)
+                pool.map(self.download_all_picture, image_list_link)
 
-    def get_pic_link(self, link):
+    def download_all_picture(self, link):
         d_link = []
         r = requests.get(link, headers=headers).text
-        ex = '<a href="/documents/(.*?)" data'
-        p = re.findall(ex, r)
+        one_picture_ex = '<a href="/documents/(.*?)" data'  # 每一页下所有图片的正则
+        p = re.findall(one_picture_ex, r)
         for i in p:
             d_link.append("https://kpopping.com/documents/" + i)
-        with concurrent.futures.ThreadPoolExecutor() as pool:
-            pool.map(self.download_one_pic, d_link)
+        with concurrent.futures.ThreadPoolExecutor() as download_pool:
+            download_pool.map(self.download_one_picture, d_link)
 
 
 if __name__ == "__main__":
