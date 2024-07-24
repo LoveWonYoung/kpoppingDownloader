@@ -34,7 +34,7 @@ class KpopDownload:
 
     def get_download_link(self):
         ex = '<a href="(.*?)" class="cell" aria-label="album">'  # 每个人下面图片链接的正则
-        for i in range(total_pages):
+        for i in range(1, total_pages + 1):
             response = requests.post(r"https://kpopping.com/profiles/idol/{}/latest-pictures/{}".format(self.name, i))
             if response.status_code != 200:
                 print(f"第:{i}页,停止了下载,因为只有这么多页")
@@ -43,8 +43,8 @@ class KpopDownload:
             image_list = re.findall(ex, idol_img_json['content'])  # 找到每页的12个链接
             image_list_link = ['https://kpopping.com' + x for x in image_list]
             print(len(image_list_link), "单次下载长度", f"第{i}页")
-            with concurrent.futures.ThreadPoolExecutor() as pool:
-                pool.map(self.download_all_picture, image_list_link)
+            with concurrent.futures.ThreadPoolExecutor() as pool2:
+                pool2.map(self.download_all_picture, image_list_link)
 
     def download_all_picture(self, link):
         d_link = []
