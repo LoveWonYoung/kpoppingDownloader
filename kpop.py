@@ -11,7 +11,7 @@ headers = {
         'Safari/537.36'
 }
 
-total_pages = 2
+total_pages = 100
 folder = '/Volumes/mac移动'
 
 
@@ -58,7 +58,8 @@ class KpopDownload:
 
 
 if __name__ == "__main__":
-    idol_name = ["Wonyoung", "Karina2", "Leeseo", "Yujin3", "Miyeon", "IU"]
+    # idol_name = ["Wonyoung", "Karina2", "Leeseo", "Yujin3", "Miyeon", "IU"，'Gaeul5']
+    idol_name = ['Liz2']
     with concurrent.futures.ThreadPoolExecutor() as pool:
         pool.map(KpopDownload, idol_name)
     print("下载完成")
