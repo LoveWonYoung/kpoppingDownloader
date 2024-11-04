@@ -1,3 +1,5 @@
-idol: "Wonyoung"
+idol:
+  - "Leeseo"
+total_page: 2
 
-total_page: 4
+path: "/Users/wonyoung/Desktop/idols"
