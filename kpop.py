@@ -53,11 +53,15 @@ class KpopDownload:
         r = ["https://kpopping.com/documents/" + x for x in re.findall(ex, temp_text)]
 
         def download_one_picture(download_link: str):
-            pic_content = requests.get(download_link, headers=headers)
-            pic_name = download_link.split('.')[1].split('/')[-1]
-            print(f"下载图片{pic_name}.jpeg")
-            with open(os.path.join(DOWNLOAD_PATH,self.idol_name,dir_name,pic_name) + ".jpeg","wb") as file:
-                file.write(pic_content.content)
+            try:
+                pic_content = requests.get(download_link, headers=headers)
+                pic_name = download_link.split('.')[1].split('/')[-1]
+                print(f"下载图片{pic_name}.jpeg")
+                with open(os.path.join(DOWNLOAD_PATH, self.idol_name, dir_name, pic_name) + ".jpeg", "wb") as file:
+                    file.write(pic_content.content)
+            except Exception as e:
+                print(f"文件下载错误 {e}")
+
         with concurrent.futures.ThreadPoolExecutor() as download_pool:
             download_pool.map(download_one_picture, r)
 
