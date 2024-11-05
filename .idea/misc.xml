@@ -3,7 +3,7 @@
   <component name="Black">
     <option name="sdkName" value="Pcan" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="kpop" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="py312" project-jdk-type="Python SDK" />
   <component name="PyCharmProfessionalAdvertiser">
     <option name="shown" value="true" />
   </component>
