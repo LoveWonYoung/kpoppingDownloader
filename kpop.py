@@ -55,7 +55,7 @@ class KpopDownload:
 
         def download_one_picture(download_link: str):
             try:
-
+                print(download_link)
                 pic_content = self.session.get(download_link, headers=headers)
                 pic_name = download_link.split('.')[1].split('/')[-1]
                 full_pic_name = os.path.join(DOWNLOAD_PATH, self.idol_name, dir_name, pic_name)
